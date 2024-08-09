@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import Header from "./Header";
 import HeroList from "./HeroList";
 import TextInsertion from "./TextInsertion";
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { makeStyles } from "@fluentui/react-components";
 import { Ribbon24Regular, LockOpen24Regular, DesignIdeas24Regular } from "@fluentui/react-icons";
 import { insertText } from "../taskpane";
@@ -39,18 +38,13 @@ const App = (props) => {
 
   return (
     <div className={styles.root}>
-      <Router>
-        <Routes>
-          <Route path="/taskpane" element={<EnterID />} />
-          <Route path="/getdrafts" element={<GetDrafts />} />
-        </Routes>
-      </Router>
+
       {/* <Header logo="assets/logo-filled.png" title={title} message="Welcome" />
       <HeroList message="Discover what this add-in can do for you today!" items={listItems} />
       <div className="text-5xl">Ahmer</div>
       <TextInsertion insertText={insertText} /> */}
       {/* <CopyCode /> */}
-      {/* <GetDrafts /> */}
+      <EnterID />
     </div>
   );
 };

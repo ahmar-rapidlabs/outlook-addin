@@ -1,4 +1,5 @@
 import os
+import secrets
 import webbrowser
 import msal
 import requests
@@ -6,7 +7,7 @@ import time
 import json
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, session
 from flask_cors import CORS
 from llama_index.core.agent import ReActAgent
 from llama_index.llms.openai import OpenAI
@@ -15,9 +16,10 @@ import threading
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
-
+CORS(app, resources={r"/*": {"origins": "https://localhost:3000"}})
+# secret_key = secrets.token_hex(16)
 last_check_time = None
+
 
 def generate_access_token(APP_ID, SCOPES, email_verification):
     access_token_cache = msal.SerializableTokenCache()
@@ -182,8 +184,83 @@ def start_polling():
     threading.Thread(target=poll_for_new_emails, args=(headers, agent)).start()
 
     response = {'status': 'Polling started', 'user_code': user_code}
-    print("Response to frontend:", response)  # Debug print
+    # print("Response to frontend:", response)  # Debug print
     return jsonify(response), 200
+
+@app.route('/fetch_drafts', methods=['POST'])
+def fetch_all_drafts():
+    data = request.json
+    print("data: ", data)
+    APP_ID = data['APP_ID']
+    SCOPES = data['SCOPES']
+    email_verification = data['email_verification']
+    print("fetch drafts email: ", email_verification)
+    token_response, _, _, _, _, _ = generate_access_token(APP_ID, SCOPES, email_verification)
+
+    mail_endpoint = "https://graph.microsoft.com/v1.0/me/mailFolders('Drafts')/messages"
+    drafts = []
+    params = {
+        '$select': 'id,subject,bodyPreview,toRecipients'
+    }
+    headers = {
+        'Authorization': f'Bearer {token_response["access_token"]}',
+        'Content-Type': 'application/json'
+    }
+    while mail_endpoint:
+        response = requests.get(mail_endpoint, headers=headers, params=params)
+        if response.status_code == 200:
+            data = response.json()
+            drafts.extend(data['value'])
+            mail_endpoint = data.get('@odata.nextLink')
+            params = {}  # Clear params to avoid duplication in subsequent requests
+        else:
+            print(f"Error fetching drafts: {response.status_code}")
+            print(response.json())
+            return None
+    print(drafts)
+    return jsonify(drafts), 200
+
+def fetch_draft(headers, draft_id):
+    
+    mail_endpoint = f"https://graph.microsoft.com/v1.0/me/messages/{draft_id}"
+    response = requests.get(mail_endpoint, headers=headers)
+    if response.status_code == 200:
+        draft = response.json()
+        return draft
+    else:
+        print(f"Error fetching draft {draft_id}: {response.status_code}")
+        print(response.json())
+        return None
+
+def update_draft(headers, draft_id, subject, body, to_recipients):
+    mail_endpoint = f"https://graph.microsoft.com/v1.0/me/messages/{draft_id}"
+    draft_payload = {
+        "subject": subject,
+        "body": {
+            "contentType": "Text",
+            "content": body
+        },
+        "toRecipients": to_recipients
+    }
+    response = requests.patch(mail_endpoint, headers=headers, json=draft_payload)
+    if response.status_code == 200:
+        print("Draft updated successfully.")
+    else:
+        print(f"Error updating draft: {response.status_code}")
+        print(response.json())
+
+def send_email(headers, draft_id):
+    mail_endpoint = f"https://graph.microsoft.com/v1.0/me/messages/{draft_id}/send"
+    response = requests.post(mail_endpoint, headers=headers)
+    if response.status_code == 202:
+        print("Email sent successfully.")
+    else:
+        print(f"Error sending email: {response.status_code}")
+        print(response.json())
+
+def query_llm(agent, prompt):
+    response = agent.query(prompt)
+    return response.get_response() if hasattr(response, 'get_response') else str(response)
 
 if __name__ == '__main__':
     openai_api_key = "sk-proj-aQ2kHLlHy08BFmeUGAQzT3BlbkFJ5agbhM31XnftQGjC1qDB"

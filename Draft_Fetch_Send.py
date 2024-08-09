@@ -47,21 +47,26 @@ def generate_access_token(APP_ID, SCOPES, email_verification):
     
     return token_response
 
-def fetch_drafts(headers, num_drafts):
-    mail_endpoint = "https://graph.microsoft.com/v1.0/me/messages"
+def fetch_all_drafts(headers):
+    mail_endpoint = "https://graph.microsoft.com/v1.0/me/mailFolders('Drafts')/messages"
+    drafts = []
     params = {
-        '$filter': 'isDraft eq true',
-        '$top': num_drafts,
         '$select': 'id,subject,bodyPreview,toRecipients'
     }
-    response = requests.get(mail_endpoint, headers=headers, params=params)
-    if response.status_code == 200:
-        drafts = response.json()['value']
-        return drafts
-    else:
-        print(f"Error fetching drafts: {response.status_code}")
-        print(response.json())
-        return None
+
+    while mail_endpoint:
+        response = requests.get(mail_endpoint, headers=headers, params=params)
+        if response.status_code == 200:
+            data = response.json()
+            drafts.extend(data['value'])
+            mail_endpoint = data.get('@odata.nextLink')
+            params = {}  # Clear params to avoid duplication in subsequent requests
+        else:
+            print(f"Error fetching drafts: {response.status_code}")
+            print(response.json())
+            return None
+    return drafts
+
 
 def fetch_draft(headers, draft_id):
     mail_endpoint = f"https://graph.microsoft.com/v1.0/me/messages/{draft_id}"
@@ -125,9 +130,7 @@ if __name__ == '__main__':
         'Content-Type': 'application/json'
     }
 
-    num_drafts = int(input("How many drafts do you want to fetch? "))
-
-    drafts = fetch_drafts(headers, num_drafts)
+    drafts = fetch_all_drafts(headers)
     if drafts:
         for i, draft in enumerate(drafts):
             print(f"Draft {i+1}:")
@@ -153,8 +156,7 @@ if __name__ == '__main__':
                 You have to generate the replies after analyzing the emails.
                 Always be positive."""
 
-                # openai_api_key = os.getenv("OPENAI_API_KEY")
-                openai_api_key = "sk-proj-aQ2kHLlHy08BFmeUGAQzT3BlbkFJ5agbhM31XnftQGjC1qDB"
+                openai_api_key = os.getenv("OPENAI_API_KEY")
                 llm = OpenAI(model="gpt-4", api_key=openai_api_key)
                 agent = ReActAgent.from_tools([], llm=llm, verbose=True, context=base_context)
                 

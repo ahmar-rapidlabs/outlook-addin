@@ -100,6 +100,7 @@ module.exports = async (env, options) => {
     ],
     devServer: {
       hot: true,
+      historyApiFallback: true,
       headers: {
         "Access-Control-Allow-Origin": "*",
       },
