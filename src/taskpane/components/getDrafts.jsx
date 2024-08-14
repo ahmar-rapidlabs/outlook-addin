@@ -47,6 +47,30 @@ function getDrafts() {
         setResponseMessage(""); // Clear response message
     };
 
+    const send_email = async () => {
+        if (!selectedDraft) return; // Ensure a draft is selected
+        console.log(selectedDraft.id);
+        try {
+            const response2 = await axios.post('http://localhost:5000/send_email', {
+                APP_ID: 'f04d6fd2-727a-4177-8554-c7d52a3cef2a',
+                SCOPES: ['User.Read', 'Mail.Read', 'Mail.ReadWrite', 'Mail.Send'],
+                email_verification: postemail,
+                draft_id: selectedDraft.id // Include the selected draft ID in the request
+            });
+            console.log(response2); // log the response to see the result
+    
+            // Call handleDrafts after successfully sending the email
+            await handleDrafts();
+            // closeModal();
+    
+        } catch (error) {
+            console.error('Error sending email:', error);
+        }
+    };
+    
+
+    
+
     const sendTextResponse = () => {
         // Implement sending response logic here
         console.log('Text response sent:', responseMessage);
@@ -128,8 +152,8 @@ function getDrafts() {
                     <p className="text-gray-800 mb-2">
                         To: {selectedDraft.toRecipients && selectedDraft.toRecipients.length > 0 ? selectedDraft.toRecipients[0].emailAddress.address : 'No recipient'}
                     </p>
-                    <div class="flex justify-end ml-auto">
-                        <button className="rounded-lg bg-indigo-600 px-2 py-1 text-sm font-semibold text-white shadow-md hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition">
+                    <div className="flex justify-end ml-auto">
+                        <button onClick={send_email} className="rounded-lg bg-indigo-600 px-2 py-1 text-sm font-semibold text-white shadow-md hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition">
                             <p>Send</p>
                         </button>
                     </div>

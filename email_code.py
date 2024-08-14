@@ -249,6 +249,30 @@ def fetch_all_drafts():
     print(drafts)
     return jsonify(drafts), 200
 
+@app.route('/send_email', methods=['POST'])
+def send_email():
+    data = request.json
+    print("data: ", data)
+    APP_ID = data['APP_ID']
+    SCOPES = data['SCOPES']
+    draft_id = data['draft_id'] 
+    print("draft id: ", draft_id)
+    email_verification = data['email_verification']
+    print("fetch drafts email: ", email_verification)
+    token_response, _, _, _, _, _ = generate_access_token(APP_ID, SCOPES, email_verification)
+    headers = {
+        'Authorization': f'Bearer {token_response["access_token"]}',
+        'Content-Type': 'application/json'
+    }
+    mail_endpoint = f"https://graph.microsoft.com/v1.0/me/messages/{draft_id}/send"
+    response = requests.post(mail_endpoint, headers=headers)
+    if response.status_code == 202:
+        print("Email sent successfully.")
+    else:
+        print(f"Error sending email: {response.status_code}")
+        print(response.json())
+    return jsonify({'message': "Email sent successfully"}), 200
+
 def fetch_draft(headers, draft_id):
     
     mail_endpoint = f"https://graph.microsoft.com/v1.0/me/messages/{draft_id}"
@@ -278,14 +302,7 @@ def update_draft(headers, draft_id, subject, body, to_recipients):
         print(f"Error updating draft: {response.status_code}")
         print(response.json())
 
-def send_email(headers, draft_id):
-    mail_endpoint = f"https://graph.microsoft.com/v1.0/me/messages/{draft_id}/send"
-    response = requests.post(mail_endpoint, headers=headers)
-    if response.status_code == 202:
-        print("Email sent successfully.")
-    else:
-        print(f"Error sending email: {response.status_code}")
-        print(response.json())
+
 
 def query_llm(agent, prompt):
     response = agent.query(prompt)
