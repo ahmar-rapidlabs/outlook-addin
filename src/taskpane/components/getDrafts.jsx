@@ -61,7 +61,7 @@ function getDrafts() {
     
             // Call handleDrafts after successfully sending the email
             await handleDrafts();
-            // closeModal();
+            closeModal();
     
         } catch (error) {
             console.error('Error sending email:', error);
@@ -173,10 +173,10 @@ function getDrafts() {
                 />
                 <button
                     onClick={sendTextResponse}
-                    className="ml-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition"
+                    className="ml-2 rounded-lg bg-white px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition"
                 >
                     <img
-                    src={require('../../../assets/microsoft-logo.png')}
+                    src={require('../../../assets/send-logo.png')}
                     alt="text"
                     className="h-4"
                     />
