@@ -93,14 +93,9 @@ function getDrafts() {
             // Reload drafts after editing
             await handleDrafts();
     
-            // Find the updated draft in the new list
-            const updatedDraft = drafts.find(draft => draft.id === selectedDraft.id);
-    
-            // Re-open the modal with the updated draft
-            if (updatedDraft) {
-                setSelectedDraft(updatedDraft);
-                setIsModalOpen(true);
-            }
+            // Close the modal
+            setIsModalOpen(false);
+            setSelectedDraft(null);
     
             // Clear the input field after sending
             setResponseMessage("");
@@ -110,6 +105,8 @@ function getDrafts() {
             // Optionally, handle error case here
         }
     };
+    
+     
     
     
 
