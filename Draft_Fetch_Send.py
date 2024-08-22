@@ -99,6 +99,21 @@ def update_draft(headers, draft_id, subject, body, to_recipients):
 def send_email(headers, draft_id):
     mail_endpoint = f"https://graph.microsoft.com/v1.0/me/messages/{draft_id}/send"
     response = requests.post(mail_endpoint, headers=headers)
+<<<<<<< HEAD
+=======
+
+    APP_ID = data['APP_ID']
+    SCOPES = data['SCOPES']
+    email_verification = data['email_verification']
+    print("fetch drafts email: ", email_verification)
+    token_response, _, _, _, _, _ = generate_access_token(APP_ID, SCOPES, email_verification)
+
+    headers = {
+        'Authorization': f'Bearer {token_response["access_token"]}',
+        'Content-Type': 'application/json'
+    }
+
+>>>>>>> 3fc1c03 (added draft-fetch-send file)
     if response.status_code == 202:
         print("Email sent successfully.")
     else:
@@ -109,6 +124,10 @@ def query_llm(agent, prompt):
     response = agent.query(prompt)
     return response.get_response() if hasattr(response, 'get_response') else str(response)
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 3fc1c03 (added draft-fetch-send file)
 if __name__ == '__main__':
     APP_ID = os.getenv("APP_ID")
     SCOPES = ["User.Read", "Mail.Read", "Mail.ReadWrite", "Mail.Send"]

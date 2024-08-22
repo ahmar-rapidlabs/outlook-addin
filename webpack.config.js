@@ -100,7 +100,14 @@ module.exports = async (env, options) => {
     ],
     devServer: {
       hot: true,
+<<<<<<< HEAD
+<<<<<<< HEAD
       historyApiFallback: true,
+=======
+>>>>>>> 72283bd (initial commit)
+=======
+      historyApiFallback: true,
+>>>>>>> 5a83849 (Get Drafts)
       headers: {
         "Access-Control-Allow-Origin": "*",
       },
