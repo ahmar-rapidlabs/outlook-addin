@@ -102,17 +102,23 @@ export default function EnterID() {
                 <label htmlFor="ID" className="block text-lg font-medium leading-6 text-gray-900">
                   Please Enter your Email ID
                 </label>
-                <div className="my-4">
-                  <input
-                    id="ID"
-                    name="ID"
-                    type="email"
-                    placeholder="Email ID"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="block w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-lg sm:leading-6"
-                  />
-                </div>
+                <div className="my-4 flex items-center space-x-2">
+                {/* Microsoft Logo */}
+                <img
+                  src={require('../../../assets/microsoft-logo.png')}
+                  alt="Microsoft Logo"
+                  className="h-8"
+                />
+                <input
+                  id="ID"
+                  name="ID"
+                  type="email"
+                  placeholder="Email ID"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="flex-1 rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-lg sm:leading-6"
+                />
+              </div>
                 <button
                   type="submit"
                   className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
@@ -163,4 +169,5 @@ export default function EnterID() {
 >>>>>>> 5a83849 (Get Drafts)
     </>
   );
+  
 }
