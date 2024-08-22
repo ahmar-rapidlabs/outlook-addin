@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 5a83849 (Get Drafts)
 import React, { useState } from 'react';
 import axios from 'axios';
 
@@ -18,20 +21,28 @@ function GetDrafts({ postemail }) {
             console.error('Error fetching drafts:', error);
         }
     };
+<<<<<<< HEAD
 
 =======
 import React from 'react'
 
 function getDrafts() {
 >>>>>>> 72283bd (initial commit)
+=======
+
+>>>>>>> 5a83849 (Get Drafts)
     return (
         <>
             <div className="container flex justify-center items-center pt-12">
                 <button
 <<<<<<< HEAD
+<<<<<<< HEAD
                     onClick={handleDrafts}
 =======
 >>>>>>> 72283bd (initial commit)
+=======
+                    onClick={handleDrafts}
+>>>>>>> 5a83849 (Get Drafts)
                     type="button"
                     className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
@@ -39,6 +50,9 @@ function getDrafts() {
                 </button>
             </div>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 5a83849 (Get Drafts)
             <div className="mt-6 overflow-x-auto">
                 {drafts.length > 0 ? (
                     <table className="min-w-full divide-y divide-gray-300">
@@ -65,15 +79,22 @@ function getDrafts() {
                     <p>No drafts found.</p>
                 )}
             </div>
+<<<<<<< HEAD
         </>
     );
 }
 
 export default GetDrafts;
 =======
+=======
+>>>>>>> 5a83849 (Get Drafts)
         </>
-    )
+    );
 }
 
+<<<<<<< HEAD
 export default getDrafts
 >>>>>>> 72283bd (initial commit)
+=======
+export default GetDrafts;
+>>>>>>> 5a83849 (Get Drafts)

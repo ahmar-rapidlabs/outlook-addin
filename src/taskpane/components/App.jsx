@@ -4,9 +4,12 @@ import Header from "./Header";
 import HeroList from "./HeroList";
 import TextInsertion from "./TextInsertion";
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 >>>>>>> 72283bd (initial commit)
+=======
+>>>>>>> 5a83849 (Get Drafts)
 import { makeStyles } from "@fluentui/react-components";
 import { Ribbon24Regular, LockOpen24Regular, DesignIdeas24Regular } from "@fluentui/react-icons";
 import { insertText } from "../taskpane";
@@ -43,6 +46,7 @@ const App = (props) => {
   return (
     <div className={styles.root}>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
       <Router>
@@ -52,16 +56,23 @@ const App = (props) => {
         </Routes>
       </Router>
 >>>>>>> 72283bd (initial commit)
+=======
+
+>>>>>>> 5a83849 (Get Drafts)
       {/* <Header logo="assets/logo-filled.png" title={title} message="Welcome" />
       <HeroList message="Discover what this add-in can do for you today!" items={listItems} />
       <div className="text-5xl">Ahmer</div>
       <TextInsertion insertText={insertText} /> */}
       {/* <CopyCode /> */}
 <<<<<<< HEAD
+<<<<<<< HEAD
       <EnterID />
 =======
       {/* <GetDrafts /> */}
 >>>>>>> 72283bd (initial commit)
+=======
+      <EnterID />
+>>>>>>> 5a83849 (Get Drafts)
     </div>
   );
 };

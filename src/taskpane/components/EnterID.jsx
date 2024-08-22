@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import CopyCode from './copyCode';
 import GetDraft from './getDrafts'; // Import GetDraft component
 
@@ -10,11 +11,20 @@ export default function EnterID() {
   const [showCode, setShowCode] = useState(false);
   const [showDraft, setShowDraft] = useState(false); // State for displaying GetDraft
 =======
+=======
+import CopyCode from './copyCode';
+import GetDraft from './getDrafts'; // Import GetDraft component
+>>>>>>> 5a83849 (Get Drafts)
 
-export default function Example() {
+export default function EnterID() {
   const [email, setEmail] = useState('');
   const [code, setCode] = useState(null);
+<<<<<<< HEAD
 >>>>>>> 72283bd (initial commit)
+=======
+  const [showCode, setShowCode] = useState(false);
+  const [showDraft, setShowDraft] = useState(false); // State for displaying GetDraft
+>>>>>>> 5a83849 (Get Drafts)
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -22,18 +32,26 @@ export default function Example() {
       const response = await axios.post('http://localhost:5000/start_polling', {
         APP_ID: 'f04d6fd2-727a-4177-8554-c7d52a3cef2a',
 <<<<<<< HEAD
+<<<<<<< HEAD
         SCOPES: ['User.Read', 'Mail.Read', 'Mail.ReadWrite','Mail.Send'],
 =======
         SCOPES: ['User.Read', 'Mail.Read', 'Mail.ReadWrite'],
 >>>>>>> 72283bd (initial commit)
+=======
+        SCOPES: ['User.Read', 'Mail.Read', 'Mail.ReadWrite','Mail.Send'],
+>>>>>>> 5a83849 (Get Drafts)
         email_verification: email
       });
       console.log('Response from backend:', response.data);
       setCode(response.data.user_code); // Assuming your backend sends a user_code
 <<<<<<< HEAD
+<<<<<<< HEAD
       setShowCode(true); // Show the code display
 =======
 >>>>>>> 72283bd (initial commit)
+=======
+      setShowCode(true); // Show the code display
+>>>>>>> 5a83849 (Get Drafts)
     } catch (error) {
       console.error('Error starting polling:', error);
       if (error.response) {
@@ -43,6 +61,9 @@ export default function Example() {
   };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 5a83849 (Get Drafts)
   const handleBackClick = () => {
     setCode(null);
     setShowCode(false);
@@ -54,6 +75,7 @@ export default function Example() {
     setShowDraft(true); // Show GetDraft component
   };
 
+<<<<<<< HEAD
   return (
     <>
       {!showCode && !showDraft ? (
@@ -68,6 +90,14 @@ export default function Example() {
           <div className="px-6 py-8 sm:p-10">
             <div>
 >>>>>>> 72283bd (initial commit)
+=======
+  return (
+    <>
+      {!showCode && !showDraft ? (
+        <div className="flex items-center justify-center min-h-screen bg-gray-100">
+          <div className="overflow-hidden rounded-lg bg-white shadow-lg w-full max-w-md">
+            <div className="px-6 py-8 sm:p-10">
+>>>>>>> 5a83849 (Get Drafts)
               <form onSubmit={handleSubmit}>
                 <label htmlFor="ID" className="block text-lg font-medium leading-6 text-gray-900">
                   Please Enter your Email ID
@@ -90,6 +120,7 @@ export default function Example() {
                   Submit
                 </button>
               </form>
+<<<<<<< HEAD
 <<<<<<< HEAD
             </div>
           </div>
@@ -116,6 +147,20 @@ export default function Example() {
         </div>
       </div>
 >>>>>>> 72283bd (initial commit)
+=======
+            </div>
+          </div>
+        </div>
+      ) : showCode ? (
+        <div className="">
+          <div className="mt-6">
+            <CopyCode text="Copy and paste the code in your browser: " code={code} onBackClick={handleBackClick} onNextClick={handleNextClick} />
+          </div>
+        </div>
+      ) : showDraft ? (
+        <GetDraft postemail={email} /> // Render GetDraft component
+      ) : null}
+>>>>>>> 5a83849 (Get Drafts)
     </>
   );
 }
