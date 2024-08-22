@@ -71,11 +71,47 @@ function getDrafts() {
 
     
 
-    const sendTextResponse = () => {
-        // Implement sending response logic here
-        console.log('Text response sent:', responseMessage);
-        setResponseMessage(""); // Clear the response message after sending
+    const sendTextResponse = async () => {
+        if (!selectedDraft || !responseMessage) return; // Ensure a draft is selected and a prompt is provided
+    
+        const prompt = responseMessage;
+    
+        console.log('Text response sent with prompt:', prompt);
+    
+        try {
+            // Call the backend to update the draft
+            const response = await axios.post('http://localhost:5000/edit_draft', {
+                APP_ID: 'f04d6fd2-727a-4177-8554-c7d52a3cef2a',
+                SCOPES: ['User.Read', 'Mail.Read', 'Mail.ReadWrite', 'Mail.Send'],
+                email_verification: postemail,
+                draft_id: selectedDraft.id, // Include the selected draft ID
+                prompt: prompt // Send the prompt to the backend
+            });
+    
+            console.log('Backend response:', response.data);
+    
+            // Reload drafts after editing
+            await handleDrafts();
+    
+            // Find the updated draft in the new list
+            const updatedDraft = drafts.find(draft => draft.id === selectedDraft.id);
+    
+            // Re-open the modal with the updated draft
+            if (updatedDraft) {
+                setSelectedDraft(updatedDraft);
+                setIsModalOpen(true);
+            }
+    
+            // Clear the input field after sending
+            setResponseMessage("");
+    
+        } catch (error) {
+            console.error('Error sending prompt to backend:', error);
+            // Optionally, handle error case here
+        }
     };
+    
+    
 
     const sendAudioResponse = () => {
         // Implement sending response logic here

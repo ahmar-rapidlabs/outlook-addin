@@ -37,6 +37,7 @@ CORS(app, resources={r"/*": {"origins": "https://localhost:3000"}})
 # secret_key = secrets.token_hex(16)
 last_check_time = None
 
+<<<<<<< HEAD
 =======
 CORS(app)
 
@@ -47,6 +48,29 @@ CORS(app, resources={r"/*": {"origins": "https://localhost:3000"}})
 last_check_time = None
 >>>>>>> 72283bd (initial commit)
 
+=======
+# Initialize the LLM model
+openai_api_key = os.getenv("OPENAI_API_KEY")
+llm = OpenAI(model="gpt-4", api_key=openai_api_key)
+agent = ReActAgent.from_tools([], llm=llm, verbose=True, context="""Your name is Haseeb. You are an Artificial Intelligence Engineer, specializing in building AI tools for clients. You receive emails from various people including friends, colleagues, and managers. Your task is to generate replies to these emails.
+                        
+                        Guidelines for replies:
+                        
+                        Be concise and positive.
+                        Avoid extending sentences unnecessarily.
+                        Ensure the replies sound human and not like a bot.
+                        Do not offer additional help or services unless specifically requested.
+                        Maintain a friendly tone.
+                        Respond based on the content and context of each email.
+                        
+                        You should never:
+
+                        Mention that you are an AI.
+                        Provide information if you don't have enough context.
+                        Offer unsolicited help.
+                        
+                        Remember, your goal is to come across as a human named Haseeb in all your replies.""")
+>>>>>>> 5c585cc (added the edit email body functionality)
 
 def generate_access_token(APP_ID, SCOPES, email_verification):
     access_token_cache = msal.SerializableTokenCache()
@@ -87,11 +111,11 @@ def complete_device_flow(client, flow, access_token_cache, email_verification):
     print("Token Response: ", token_response)
     if "access_token" not in token_response:
         raise ValueError("Failed to obtain access token. Please check the user code and try again.")
-    print("before opening acces token json")
+    print("before opening access token json")
     with open(email_verification + ".json", 'w') as f:
         f.write(access_token_cache.serialize())
     
-    print("after opening acces token json")
+    print("after opening access token json")
     return token_response
 
 def fetch_email_ids(headers, last_check_time):
@@ -120,10 +144,6 @@ def fetch_email(headers, email_id):
         print(f"Error fetching email {email_id}: {response.status_code}")
         print(response.json())
         return None
-
-def query_llm(agent, prompt):
-    response = agent.query(prompt)
-    return response.get_response() if hasattr(response, 'get_response') else str(response)
 
 def create_draft(headers, recipient_email, subject, body):
     mail_endpoint = "https://graph.microsoft.com/v1.0/me/messages"
@@ -273,8 +293,37 @@ def send_email():
         print(response.json())
     return jsonify({'message': "Email sent successfully"}), 200
 
+@app.route('/edit_draft', methods=['POST'])
+def edit_draft():
+    data = request.json
+    APP_ID = data['APP_ID']
+    SCOPES = data['SCOPES']
+    draft_id = data['draft_id']
+    prompt = data['prompt']
+    print(prompt)
+    email_verification = data['email_verification']
+
+    token_response, _, _, _, _, _ = generate_access_token(APP_ID, SCOPES, email_verification)
+    headers = {
+        'Authorization': f'Bearer {token_response["access_token"]}',
+        'Content-Type': 'application/json'
+    }
+
+    # Fetch the draft
+    draft = fetch_draft(headers, draft_id)
+    if not draft:
+        return jsonify({'message': 'Draft not found'}), 404
+
+    # Generate edited content based on prompt
+    edited_body = query_llm(agent, f"{draft['body']['content']}\nPrompt: {prompt}")
+
+    # Update the draft with edited content
+    update_draft(headers, draft_id, draft['subject'], edited_body, draft['toRecipients'])
+
+    return jsonify({'message': 'Draft updated successfully'}), 200
+
+
 def fetch_draft(headers, draft_id):
-    
     mail_endpoint = f"https://graph.microsoft.com/v1.0/me/messages/{draft_id}"
     response = requests.get(mail_endpoint, headers=headers)
     if response.status_code == 200:
@@ -301,8 +350,6 @@ def update_draft(headers, draft_id, subject, body, to_recipients):
     else:
         print(f"Error updating draft: {response.status_code}")
         print(response.json())
-
-
 
 def query_llm(agent, prompt):
     response = agent.query(prompt)
@@ -394,24 +441,4 @@ def query_llm(agent, prompt):
 
 >>>>>>> 5a83849 (Get Drafts)
 if __name__ == '__main__':
-    openai_api_key = "sk-proj-aQ2kHLlHy08BFmeUGAQzT3BlbkFJ5agbhM31XnftQGjC1qDB"
-    llm = OpenAI(model="gpt-4", api_key=openai_api_key)
-    agent = ReActAgent.from_tools([], llm=llm, verbose=True, context="""Your name is Haseeb. You are an Artificial Intelligence Engineer, specializing in building AI tools for clients. You receive emails from various people including friends, colleagues, and managers. Your task is to generate replies to these emails.
-                        
-                        Guidelines for replies:
-                        
-                        Be concise and positive.
-                        Avoid extending sentences unnecessarily.
-                        Ensure the replies sound human and not like a bot.
-                        Do not offer additional help or services unless specifically requested.
-                        Maintain a friendly tone.
-                        Respond based on the content and context of each email.
-                        
-                        You should never:
-
-                        Mention that you are an AI.
-                        Provide information if you don't have enough context.
-                        Offer unsolicited help.
-                        
-                        Remember, your goal is to come across as a human named Haseeb in all your replies.""")
     app.run(port=5000, debug=True)
