@@ -1,5 +1,8 @@
 import os
+<<<<<<< HEAD
 import secrets
+=======
+>>>>>>> 72283bd (initial commit)
 import webbrowser
 import msal
 import requests
@@ -7,7 +10,11 @@ import time
 import json
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
+<<<<<<< HEAD
 from flask import Flask, request, jsonify, session
+=======
+from flask import Flask, request, jsonify
+>>>>>>> 72283bd (initial commit)
 from flask_cors import CORS
 from llama_index.core.agent import ReActAgent
 from llama_index.llms.openai import OpenAI
@@ -16,10 +23,16 @@ import threading
 load_dotenv()
 
 app = Flask(__name__)
+<<<<<<< HEAD
 CORS(app, resources={r"/*": {"origins": "https://localhost:3000"}})
 # secret_key = secrets.token_hex(16)
 last_check_time = None
 
+=======
+CORS(app)
+
+last_check_time = None
+>>>>>>> 72283bd (initial commit)
 
 def generate_access_token(APP_ID, SCOPES, email_verification):
     access_token_cache = msal.SerializableTokenCache()
@@ -184,6 +197,7 @@ def start_polling():
     threading.Thread(target=poll_for_new_emails, args=(headers, agent)).start()
 
     response = {'status': 'Polling started', 'user_code': user_code}
+<<<<<<< HEAD
     # print("Response to frontend:", response)  # Debug print
     return jsonify(response), 200
 
@@ -262,6 +276,11 @@ def query_llm(agent, prompt):
     response = agent.query(prompt)
     return response.get_response() if hasattr(response, 'get_response') else str(response)
 
+=======
+    print("Response to frontend:", response)  # Debug print
+    return jsonify(response), 200
+
+>>>>>>> 72283bd (initial commit)
 if __name__ == '__main__':
     openai_api_key = "sk-proj-aQ2kHLlHy08BFmeUGAQzT3BlbkFJ5agbhM31XnftQGjC1qDB"
     llm = OpenAI(model="gpt-4", api_key=openai_api_key)
